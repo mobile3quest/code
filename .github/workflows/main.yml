@@ -40,7 +40,10 @@ jobs:
       - name: Update values.yaml & Pull Request to Config Repository
         run: |
           # GitHubログイン
-          echo -e "machine github.com\nlogin ${{ secrets.USERNAME }}\npassword ${{ secrets.GH_PASSWORD }}" > ~/.netrc
+          # echo -e "machine github.com\nlogin ${{ secrets.USERNAME }}\npassword ${{ secrets.GH_PASSWORD }}" > ~/.netrc
+          echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}" > token.txt
+          gh auth login --with-token < token.txt
+
           # 「config」リポジトリからクローン
           git clone https://github.com/${{ secrets.USERNAME }}/config.git
           # values.yamlファイルの更新処理
@@ -55,11 +58,10 @@ jobs:
           # プッシュ処理
           git add values.yaml
           git commit -m "Update tag ${{ github.run_number }}"
-          #git push origin feature/${{ github.run_number }}
-          git push --set-upstream origin feature/${{ github.run_number }}
+          git push -u origin feature/${{ github.run_number }}
 
           # プルリクエスト処理
-          echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
-          echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}" > token.txt
-          gh auth login --with-token < token.txt
+          #echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          #echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}" > token.txt
+          #gh auth login --with-token < token.txt
           gh pr create  --title "Update Tag ${{ github.run_number }}" --body "Please Merge !!"
