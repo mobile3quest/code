@@ -55,12 +55,11 @@ jobs:
           # プッシュ処理
           git add values.yaml
           git commit -m "Update tag ${{ github.run_number }}"
-          git push # origin feature/${{ github.run_number }}
+          #git push origin feature/${{ github.run_number }}
+          git push --set-upstream origin feature/${{ github.run_number }}
 
           # プルリクエスト処理
-          echo "create token.txt"
           echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
           echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}" > token.txt
-          cat token.txt
           gh auth login --with-token < token.txt
           gh pr create  --title "Update Tag ${{ github.run_number }}" --body "Please Merge !!"
