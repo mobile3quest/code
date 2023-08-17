@@ -41,6 +41,7 @@ jobs:
         run: |
           # GitHubログイン
           # echo -e "machine github.com\nlogin ${{ secrets.USERNAME }}\npassword ${{ secrets.GH_PASSWORD }}" > ~/.netrc
+          echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
           echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}" > token.txt
           gh auth login --with-token < token.txt
 
@@ -61,7 +62,5 @@ jobs:
           git push -u origin feature/${{ github.run_number }}
 
           # プルリクエスト処理
-          #echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
-          #echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}" > token.txt
           #gh auth login --with-token < token.txt
           gh pr create  --title "Update Tag ${{ github.run_number }}" --body "Please Merge !!"
