@@ -41,7 +41,6 @@ jobs:
         run: |
           # GitHubログイン
           echo -e "machine github.com\nlogin ${{ secrets.USERNAME }}\npassword ${{ secrets.GH_PASSWORD }}" > ~/.netrc
-          cat ~/.netrc
           # 「config」リポジトリからクローン
           git clone https://github.com/${{ secrets.USERNAME }}/config.git
           # values.yamlファイルの更新処理
@@ -52,16 +51,14 @@ jobs:
           git branch feature/${{ github.run_number }}
           git checkout feature/${{ github.run_number }}
           # values.yamlのタグ番号を更新
-          echo "-----"
-          cat values.yaml
           sed -i 's/tag: [0-9]*/tag: ${{ github.run_number }}/g' values.yaml
-          echo "-----"
-          cat values.yaml
           # プッシュ処理
           git add values.yaml
           git commit -m "Update tag ${{ github.run_number }}"
           git push origin feature/${{ github.run_number }}
           # プルリクエスト処理
+          echo "create token.txt"
+          echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
           echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}" > token.txt
           cat token.txt
           gh auth login --with-token < token.txt
